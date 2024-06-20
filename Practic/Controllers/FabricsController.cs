@@ -49,8 +49,8 @@ namespace Practic.Controllers
         // GET: Fabrics/Create
         public IActionResult Create()
         {
-            ViewData["ForWhatId"] = new SelectList(_context.ForWhats, "Id", "Id");
-            ViewData["SetviceNameId"] = new SelectList(_context.ServiceNames, "Id", "Id");
+            ViewData["ForWhatId"] = new SelectList(_context.ForWhats, "Id", "TypeofWork");
+            ViewData["SetviceNameId"] = new SelectList(_context.ServiceNames, "Id", "NameofService");
             return View();
         }
 
@@ -67,8 +67,8 @@ namespace Practic.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ForWhatId"] = new SelectList(_context.ForWhats, "Id", "Id", fabric.ForWhatId);
-            ViewData["SetviceNameId"] = new SelectList(_context.ServiceNames, "Id", "Id", fabric.SetviceNameId);
+            ViewData["ForWhatId"] = new SelectList(_context.ForWhats, "Id", "TypeofWork", fabric.ForWhatId);
+            ViewData["SetviceNameId"] = new SelectList(_context.ServiceNames, "Id", "NameofService", fabric.SetviceNameId);
             return View(fabric);
         }
 
@@ -85,8 +85,8 @@ namespace Practic.Controllers
             {
                 return NotFound();
             }
-            ViewData["ForWhatId"] = new SelectList(_context.ForWhats, "Id", "Id", fabric.ForWhatId);
-            ViewData["SetviceNameId"] = new SelectList(_context.ServiceNames, "Id", "Id", fabric.SetviceNameId);
+            ViewData["ForWhatId"] = new SelectList(_context.ForWhats, "Id", "TypeofWork", fabric.ForWhatId);
+            ViewData["SetviceNameId"] = new SelectList(_context.ServiceNames, "Id", "NameofService", fabric.SetviceNameId);
             return View(fabric);
         }
 
@@ -122,8 +122,8 @@ namespace Practic.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ForWhatId"] = new SelectList(_context.ForWhats, "Id", "Id", fabric.ForWhatId);
-            ViewData["SetviceNameId"] = new SelectList(_context.ServiceNames, "Id", "Id", fabric.SetviceNameId);
+            ViewData["ForWhatId"] = new SelectList(_context.ForWhats, "Id", "TypeofWork", fabric.ForWhatId);
+            ViewData["SetviceNameId"] = new SelectList(_context.ServiceNames, "Id", "NameofService", fabric.SetviceNameId);
             return View(fabric);
         }
 

@@ -9,9 +9,9 @@ public partial class Fabric
 
     public string Name { get; set; } = null!;
 
-    public int SetviceNameId { get; set; }
+    public int? SetviceNameId { get; set; }
 
-    public int ForWhatId { get; set; }
+    public int? ForWhatId { get; set; }
 
     public string CodeTnved { get; set; } = null!;
 
@@ -19,7 +19,7 @@ public partial class Fabric
 
     public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
 
-    public virtual ForWhat ForWhat { get; set; } = null!;
+    public virtual ForWhat? ForWhat { get; set; } = null!;
 
-    public virtual ServiceName SetviceName { get; set; } = null!;
+    public virtual ServiceName? SetviceName { get; set; } = null!;
 }

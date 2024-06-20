@@ -1,4 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using Practic;
+
 var builder = WebApplication.CreateBuilder(args);
+string connectionString = builder.Configuration.GetConnectionString("SqliteConnection");
+builder.Services.AddDbContext<PracticdataContext>(options => options.UseSqlite(connectionString));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

@@ -4,45 +4,45 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Подробности</h1>
 
 <div>
-    <h4>Fabric</h4>
+    <h4>Материал</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
+            Материал
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CodeTnved)
+            Код ТН ВЭД
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.CodeTnved)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CodeOkrb)
+            Код ОКРБ
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.CodeOkrb)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ForWhat)
+            Вид работ
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ForWhat.Id)
+            @Html.DisplayFor(model => model.ForWhat.TypeofWork)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SetviceName)
+            Служба
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SetviceName.Id)
+            @Html.DisplayFor(model => model.SetviceName.NameofService)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Изменить</a> |
+    <a asp-action="Index">Назад</a>
 </div>

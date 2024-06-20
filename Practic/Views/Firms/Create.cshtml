@@ -4,33 +4,33 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Создать</h1>
 
-<h4>Firm</h4>
+<h4>Фирма</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="СountryofFirm" class="control-label"></label>
+                <label asp-for="СountryofFirm" class="control-label">Страна</label>
                 <input asp-for="СountryofFirm" class="form-control" />
                 <span asp-validation-for="СountryofFirm" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="NameofFirm" class="control-label"></label>
+                <label asp-for="NameofFirm" class="control-label">Название</label>
                 <input asp-for="NameofFirm" class="form-control" />
                 <span asp-validation-for="NameofFirm" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Создать" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Назад</a>
 </div>
 
 @section Scripts {

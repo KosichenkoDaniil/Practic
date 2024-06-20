@@ -4,28 +4,28 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Материал</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Создать</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Материал
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CodeTnved)
+                Код ТН ВЭД
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CodeOkrb)
+                Код ОКРБ
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ForWhat)
+                Вид работ
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SetviceName)
+                Служба
             </th>
             <th></th>
         </tr>
@@ -43,15 +43,15 @@
                 @Html.DisplayFor(modelItem => item.CodeOkrb)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ForWhat.Id)
+                    @Html.DisplayFor(modelItem => item.ForWhat.TypeofWork)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.SetviceName.Id)
+                    @Html.DisplayFor(modelItem => item.SetviceName.NameofService)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Id">Изменить</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Подробности</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
             </td>
         </tr>
 }

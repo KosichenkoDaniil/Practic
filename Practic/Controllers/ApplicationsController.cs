@@ -50,9 +50,9 @@ namespace Practic.Controllers
         // GET: Applications/Create
         public IActionResult Create()
         {
-            ViewData["CurrencyId"] = new SelectList(_context.Currencies, "Id", "Id");
-            ViewData["FabricId"] = new SelectList(_context.Fabrics, "Id", "Id");
-            ViewData["FirmId"] = new SelectList(_context.Firms, "Id", "Id");
+            ViewData["CurrencyId"] = new SelectList(_context.Currencies, "Id", "NameofCurrency");
+            ViewData["FabricId"] = new SelectList(_context.Fabrics, "Id", "Name");
+            ViewData["FirmId"] = new SelectList(_context.Firms, "Id", "NameofFirm");
             return View();
         }
 
@@ -69,9 +69,9 @@ namespace Practic.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CurrencyId"] = new SelectList(_context.Currencies, "Id", "Id", application.CurrencyId);
-            ViewData["FabricId"] = new SelectList(_context.Fabrics, "Id", "Id", application.FabricId);
-            ViewData["FirmId"] = new SelectList(_context.Firms, "Id", "Id", application.FirmId);
+            ViewData["CurrencyId"] = new SelectList(_context.Currencies, "Id", "NameofCurrency", application.CurrencyId);
+            ViewData["FabricId"] = new SelectList(_context.Fabrics, "Id", "Name", application.FabricId);
+            ViewData["FirmId"] = new SelectList(_context.Firms, "Id", "NameofFirm", application.FirmId);
             return View(application);
         }
 
@@ -88,9 +88,9 @@ namespace Practic.Controllers
             {
                 return NotFound();
             }
-            ViewData["CurrencyId"] = new SelectList(_context.Currencies, "Id", "Id", application.CurrencyId);
-            ViewData["FabricId"] = new SelectList(_context.Fabrics, "Id", "Id", application.FabricId);
-            ViewData["FirmId"] = new SelectList(_context.Firms, "Id", "Id", application.FirmId);
+            ViewData["CurrencyId"] = new SelectList(_context.Currencies, "Id", "NameofCurrency", application.CurrencyId);
+            ViewData["FabricId"] = new SelectList(_context.Fabrics, "Id", "Name", application.FabricId);
+            ViewData["FirmId"] = new SelectList(_context.Firms, "Id", "NameofFirm", application.FirmId);
             return View(application);
         }
 
@@ -126,9 +126,9 @@ namespace Practic.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CurrencyId"] = new SelectList(_context.Currencies, "Id", "Id", application.CurrencyId);
-            ViewData["FabricId"] = new SelectList(_context.Fabrics, "Id", "Id", application.FabricId);
-            ViewData["FirmId"] = new SelectList(_context.Firms, "Id", "Id", application.FirmId);
+            ViewData["CurrencyId"] = new SelectList(_context.Currencies, "Id", "NameofCurrency", application.CurrencyId);
+            ViewData["FabricId"] = new SelectList(_context.Fabrics, "Id", "Name", application.FabricId);
+            ViewData["FirmId"] = new SelectList(_context.Firms, "Id", "NameofFirm", application.FirmId);
             return View(application);
         }
 

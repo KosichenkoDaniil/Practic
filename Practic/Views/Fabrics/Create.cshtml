@@ -4,46 +4,46 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Создать</h1>
 
-<h4>Fabric</h4>
+<h4>Материал</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+                <label asp-for="Name" class="control-label">Материал</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SetviceNameId" class="control-label"></label>
+                <label asp-for="SetviceNameId" class="control-label">Служба</label>
                 <select asp-for="SetviceNameId" class ="form-control" asp-items="ViewBag.SetviceNameId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="ForWhatId" class="control-label"></label>
+                <label asp-for="ForWhatId" class="control-label">Вид работ</label>
                 <select asp-for="ForWhatId" class ="form-control" asp-items="ViewBag.ForWhatId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="CodeTnved" class="control-label"></label>
+                <label asp-for="CodeTnved" class="control-label">Код ТН ВЭД</label>
                 <input asp-for="CodeTnved" class="form-control" />
                 <span asp-validation-for="CodeTnved" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CodeOkrb" class="control-label"></label>
+                <label asp-for="CodeOkrb" class="control-label">Код ОКРБ</label>
                 <input asp-for="CodeOkrb" class="form-control" />
                 <span asp-validation-for="CodeOkrb" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Создать" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Назад</a>
 </div>
 
 @section Scripts {
