@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -7,12 +8,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Practic;
 using Practic.Models;
+using Practic.ViewModels;
+using Practic.Infrastructure;
 
 namespace Practic.Controllers
 {
     public class CurrenciesController : Controller
     {
         private readonly PracticdataContext _context;
+        private readonly int pageSize = 10;
 
         public CurrenciesController(PracticdataContext context)
         {
@@ -20,9 +24,34 @@ namespace Practic.Controllers
         }
 
         // GET: Currencies
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int page = 1)
         {
-            return View(await _context.Currencies.ToListAsync());
+            var currencyView = HttpContext.Session.Get<CurrencyViewModel>("Currencies");
+            if (currencyView == null)
+            {
+                currencyView = new CurrencyViewModel();
+            }
+
+            IQueryable<Models.Currency> currenciesDbContext = _context.Currencies;
+            currenciesDbContext = Search(currenciesDbContext, currencyView.NameofCurrency, currencyView.CountryofCurrency);
+            var count = currenciesDbContext.Count();
+            currenciesDbContext = currenciesDbContext.Skip((page - 1) * pageSize).Take(pageSize);
+            CurrencyViewModel currencies = new CurrencyViewModel
+            {
+                currencies = currenciesDbContext,
+                PageViewModel = new PageViewModel(count, page, pageSize),
+                NameofCurrency = currencyView.NameofCurrency,
+                CountryofCurrency = currencyView.CountryofCurrency
+            };
+            return View(currencies);
+        }
+
+        [HttpPost]
+        public IActionResult Index(CurrencyViewModel currencyView)
+        {
+            HttpContext.Session.Set("Currencies", currencyView);
+
+            return RedirectToAction("Index");
         }
 
         // GET: Currencies/Details/5
@@ -152,6 +181,14 @@ namespace Practic.Controllers
         private bool CurrencyExists(int id)
         {
             return _context.Currencies.Any(e => e.Id == id);
+        }
+
+        private IQueryable<Models.Currency> Search(IQueryable<Models.Currency> currencies, string NameofCurrency, string CountryofCurrency)
+        {
+            currencies = currencies.Where(o => o.NameofCurrency.Contains(NameofCurrency ?? "")
+           && (o.CountryofCurrency.Contains(CountryofCurrency ?? "")));
+
+            return currencies;
         }
     }
 }

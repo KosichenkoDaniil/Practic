@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -7,12 +8,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Practic;
 using Practic.Models;
+using Practic.ViewModels;
+using Practic.Infrastructure;
 
 namespace Practic.Controllers
 {
     public class FabricsController : Controller
     {
         private readonly PracticdataContext _context;
+        private readonly int pageSize = 10;
 
         public FabricsController(PracticdataContext context)
         {
@@ -20,10 +24,38 @@ namespace Practic.Controllers
         }
 
         // GET: Fabrics
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int page = 1)
         {
-            var practicdataContext = _context.Fabrics.Include(f => f.ForWhat).Include(f => f.SetviceName);
-            return View(await practicdataContext.ToListAsync());
+            var fabricView = HttpContext.Session.Get<FabricViewModel>("Fabric");
+            if (fabricView == null)
+            {
+                fabricView = new FabricViewModel();
+            }
+
+            IQueryable<Models.Fabric> fabricsDbContext = _context.Fabrics.Include(o => o.SetviceName).Include(o => o.ForWhat);
+            fabricsDbContext = Search(fabricsDbContext, fabricView.Name, fabricView.NameofService, fabricView.TypeofWork, fabricView.CodeTnved
+    , fabricView.CodeOkrb);
+            var count = fabricsDbContext.Count();
+            fabricsDbContext = fabricsDbContext.Skip((page - 1) * pageSize).Take(pageSize);
+            FabricViewModel fabrics = new FabricViewModel
+            {
+                fabrics = fabricsDbContext,
+                PageViewModel = new PageViewModel(count, page, pageSize),
+                Name = fabricView.Name,
+                NameofService = fabricView.NameofService,
+                TypeofWork = fabricView.TypeofWork,
+                CodeTnved = fabricView.CodeTnved,
+                CodeOkrb = fabricView.CodeOkrb
+            };
+            return View(fabrics);
+        }
+
+        [HttpPost]
+        public IActionResult Index(FabricViewModel fabricView)
+        {
+            HttpContext.Session.Set("Fabric", fabricView);
+
+            return RedirectToAction("Index");
         }
 
         // GET: Fabrics/Details/5
@@ -165,6 +197,18 @@ namespace Practic.Controllers
         private bool FabricExists(int id)
         {
             return _context.Fabrics.Any(e => e.Id == id);
+        }
+
+        private IQueryable<Models.Fabric> Search(IQueryable<Models.Fabric> fabrics, string Name, string NameofService,
+           string TypeofWork, string CodeTnved, string CodeOkrb)
+        {
+            fabrics = fabrics.Where(o => o.Name.Contains(Name ?? "")
+           && (o.SetviceName.NameofService.Contains(NameofService ?? ""))
+           && (o.ForWhat.TypeofWork.Contains(TypeofWork ?? ""))
+           && (o.CodeTnved.Contains(CodeTnved ?? ""))
+           && (o.CodeOkrb.Contains(CodeOkrb ?? "")));
+
+            return fabrics;
         }
     }
 }

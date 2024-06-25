@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -7,12 +8,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Practic;
 using Practic.Models;
+using Practic.ViewModels;
+using Practic.Infrastructure;
 
 namespace Practic.Controllers
 {
     public class ForWhatsController : Controller
     {
         private readonly PracticdataContext _context;
+        private readonly int pageSize = 10;
 
         public ForWhatsController(PracticdataContext context)
         {
@@ -20,9 +24,33 @@ namespace Practic.Controllers
         }
 
         // GET: ForWhats
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int page = 1)
         {
-            return View(await _context.ForWhats.ToListAsync());
+            var forWhatView = HttpContext.Session.Get<ForWhatViewModel>("ForWhats");
+            if (forWhatView == null)
+            {
+                forWhatView = new ForWhatViewModel();
+            }
+
+            IQueryable<Models.ForWhat> forWhatsDbContext = _context.ForWhats;
+            forWhatsDbContext = Search(forWhatsDbContext, forWhatView.TypeofWork);
+            var count = forWhatsDbContext.Count();
+            forWhatsDbContext = forWhatsDbContext.Skip((page - 1) * pageSize).Take(pageSize);
+            ForWhatViewModel forWhats = new ForWhatViewModel
+            {
+                forWhats = forWhatsDbContext,
+                PageViewModel = new PageViewModel(count, page, pageSize),
+                TypeofWork = forWhatView.TypeofWork
+            };
+            return View(forWhats);
+        }
+
+        [HttpPost]
+        public IActionResult Index(ForWhatViewModel forWhatView)
+        {
+            HttpContext.Session.Set("ForWhats", forWhatView);
+
+            return RedirectToAction("Index");
         }
 
         // GET: ForWhats/Details/5
@@ -137,7 +165,7 @@ namespace Practic.Controllers
         // POST: ForWhats/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConforWhated(int id)
         {
             var forWhat = await _context.ForWhats.FindAsync(id);
             if (forWhat != null)
@@ -152,6 +180,13 @@ namespace Practic.Controllers
         private bool ForWhatExists(int id)
         {
             return _context.ForWhats.Any(e => e.Id == id);
+        }
+
+        private IQueryable<Models.ForWhat> Search(IQueryable<Models.ForWhat> forWhats, string TypeofWork)
+        {
+            forWhats = forWhats.Where(o => o.TypeofWork.Contains(TypeofWork ?? ""));
+
+            return forWhats;
         }
     }
 }

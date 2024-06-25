@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -7,12 +8,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Practic;
 using Practic.Models;
+using Practic.ViewModels;
+using Practic.Infrastructure;
 
 namespace Practic.Controllers
 {
     public class FirmsController : Controller
     {
         private readonly PracticdataContext _context;
+        private readonly int pageSize = 10;
 
         public FirmsController(PracticdataContext context)
         {
@@ -20,9 +24,34 @@ namespace Practic.Controllers
         }
 
         // GET: Firms
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int page = 1)
         {
-            return View(await _context.Firms.ToListAsync());
+            var firmView = HttpContext.Session.Get<FirmViewModel>("Firms");
+            if (firmView == null)
+            {
+                firmView = new FirmViewModel();
+            }
+
+            IQueryable<Models.Firm> firmsDbContext = _context.Firms;
+            firmsDbContext = Search(firmsDbContext, firmView.NameofFirm, firmView.СountryofFirm);
+            var count = firmsDbContext.Count();
+            firmsDbContext = firmsDbContext.Skip((page - 1) * pageSize).Take(pageSize);
+            FirmViewModel firms = new FirmViewModel
+            {
+                firms = firmsDbContext,
+                PageViewModel = new PageViewModel(count, page, pageSize),
+                NameofFirm = firmView.NameofFirm,
+                СountryofFirm = firmView.СountryofFirm
+            };
+            return View(firms);
+        }
+
+        [HttpPost]
+        public IActionResult Index(FirmViewModel firmView)
+        {
+            HttpContext.Session.Set("Firms", firmView);
+
+            return RedirectToAction("Index");
         }
 
         // GET: Firms/Details/5
@@ -152,6 +181,14 @@ namespace Practic.Controllers
         private bool FirmExists(int id)
         {
             return _context.Firms.Any(e => e.Id == id);
+        }
+
+        private IQueryable<Models.Firm> Search(IQueryable<Models.Firm> firms, string NameofFirm, string CountryofFirm)
+        {
+            firms = firms.Where(o => o.NameofFirm.Contains(NameofFirm ?? "")
+           && (o.СountryofFirm.Contains(CountryofFirm ?? "")));
+
+            return firms;
         }
     }
 }

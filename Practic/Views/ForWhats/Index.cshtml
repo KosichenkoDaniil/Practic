@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Practic.Models.ForWhat>
+﻿@model Practic.ViewModels.ForWhatViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -9,6 +9,10 @@
 <p>
     <a asp-action="Create">Создать</a>
 </p>
+<form action="@Url.Action("Index","ForWhats")" method="post">
+    Вид работ:@Html.TextBox("TypeofWork", Model.TypeofWork)
+    <input type="submit" value="Найти"></input>
+</form>
 <table class="table">
     <thead>
         <tr>
@@ -19,7 +23,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.forWhats) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.TypeofWork)

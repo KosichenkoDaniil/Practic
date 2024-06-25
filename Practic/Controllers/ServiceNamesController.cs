@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -7,12 +8,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Practic;
 using Practic.Models;
+using Practic.ViewModels;
+using Practic.Infrastructure;
 
 namespace Practic.Controllers
 {
     public class ServiceNamesController : Controller
     {
         private readonly PracticdataContext _context;
+        private readonly int pageSize = 10;
 
         public ServiceNamesController(PracticdataContext context)
         {
@@ -20,9 +24,34 @@ namespace Practic.Controllers
         }
 
         // GET: ServiceNames
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int page = 1)
         {
-            return View(await _context.ServiceNames.ToListAsync());
+            var serviceNameView = HttpContext.Session.Get<ServiceNameViewModel>("ServiceNames");
+            if (serviceNameView == null)
+            {
+                serviceNameView = new ServiceNameViewModel();
+            }
+
+            IQueryable<Models.ServiceName> serviceNamesDbContext = _context.ServiceNames;
+            serviceNamesDbContext = Search(serviceNamesDbContext, serviceNameView.NameofService, serviceNameView.Department);
+            var count = serviceNamesDbContext.Count();
+            serviceNamesDbContext = serviceNamesDbContext.Skip((page - 1) * pageSize).Take(pageSize);
+            ServiceNameViewModel serviceNames = new ServiceNameViewModel
+            {
+                serviceNames = serviceNamesDbContext,
+                PageViewModel = new PageViewModel(count, page, pageSize),
+                NameofService = serviceNameView.NameofService,
+                Department = serviceNameView.Department
+            };
+            return View(serviceNames);
+        }
+
+        [HttpPost]
+        public IActionResult Index(ServiceNameViewModel serviceNameView)
+        {
+            HttpContext.Session.Set("ServiceNames", serviceNameView);
+
+            return RedirectToAction("Index");
         }
 
         // GET: ServiceNames/Details/5
@@ -137,7 +166,7 @@ namespace Practic.Controllers
         // POST: ServiceNames/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConserviceNameed(int id)
         {
             var serviceName = await _context.ServiceNames.FindAsync(id);
             if (serviceName != null)
@@ -152,6 +181,14 @@ namespace Practic.Controllers
         private bool ServiceNameExists(int id)
         {
             return _context.ServiceNames.Any(e => e.Id == id);
+        }
+
+        private IQueryable<Models.ServiceName> Search(IQueryable<Models.ServiceName> serviceNames, string NameofService, string Department)
+        {
+            serviceNames = serviceNames.Where(o => o.NameofService.Contains(NameofService ?? "")
+           && (o.Department.Contains(Department ?? "")));
+
+            return serviceNames;
         }
     }
 }

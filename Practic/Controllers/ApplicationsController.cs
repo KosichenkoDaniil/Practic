@@ -2,17 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Build.Evaluation;
 using Microsoft.EntityFrameworkCore;
 using Practic;
 using Practic.Models;
+using Practic.ViewModels;
+using Practic.Infrastructure;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Practic.Controllers
 {
     public class ApplicationsController : Controller
     {
         private readonly PracticdataContext _context;
+        private readonly int pageSize = 10;
 
         public ApplicationsController(PracticdataContext context)
         {
@@ -20,10 +26,39 @@ namespace Practic.Controllers
         }
 
         // GET: Applications
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int page = 1)
         {
-            var practicdataContext = _context.Applications.Include(a => a.Currency).Include(a => a.Fabric).Include(a => a.Firm);
-            return View(await practicdataContext.ToListAsync());
+            var applicationView = HttpContext.Session.Get<ApplicationViewModel>("Application");
+            if (applicationView == null)
+            {
+                applicationView = new ApplicationViewModel();
+            }
+
+            IQueryable<Models.Application> applicationsDbContext = _context.Applications.Include(o => o.Fabric).Include(o => o.Currency).Include(o => o.Firm);
+            applicationsDbContext = Search(applicationsDbContext, applicationView.Name, applicationView.ShortDescription, applicationView.NameofFirm, applicationView.NameofCurrency
+    , applicationView.Price, applicationView.Quantity);
+            var count = applicationsDbContext.Count();
+            applicationsDbContext = applicationsDbContext.Skip((page - 1) * pageSize).Take(pageSize);
+            ApplicationViewModel applications = new ApplicationViewModel
+            {
+                applications = applicationsDbContext,
+                PageViewModel = new PageViewModel(count, page, pageSize),
+                Name = applicationView.Name,
+                ShortDescription = applicationView.ShortDescription,
+                NameofFirm = applicationView.NameofFirm,
+                NameofCurrency = applicationView.NameofCurrency,
+                Price = applicationView.Price,
+                Quantity = applicationView.Quantity
+            };
+            return View(applications);
+        }
+
+        [HttpPost]
+        public IActionResult Index(ApplicationViewModel applicationView)
+        {
+            HttpContext.Session.Set("Application", applicationView);
+
+            return RedirectToAction("Index");
         }
 
         // GET: Applications/Details/5
@@ -61,7 +96,7 @@ namespace Practic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FabricId,ShortDescription,FirmId,CurrencyId,Price,Quantity")] Application application)
+        public async Task<IActionResult> Create([Bind("Id,FabricId,ShortDescription,FirmId,CurrencyId,Price,Quantity")] Models.Application application)
         {
             if (ModelState.IsValid)
             {
@@ -99,7 +134,7 @@ namespace Practic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FabricId,ShortDescription,FirmId,CurrencyId,Price,Quantity")] Application application)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FabricId,ShortDescription,FirmId,CurrencyId,Price,Quantity")] Models.Application application)
         {
             if (id != application.Id)
             {
@@ -171,6 +206,19 @@ namespace Practic.Controllers
         private bool ApplicationExists(int id)
         {
             return _context.Applications.Any(e => e.Id == id);
+        }
+
+        private IQueryable<Models.Application> Search(IQueryable<Models.Application> applications, string Name, string ShortDescription,
+           string NameofFirm, string NameofCurrency, decimal Price, int Quantity)
+        {
+            applications = applications.Where(o => o.Fabric.Name.Contains(Name ?? "")
+           && (o.ShortDescription.Contains(ShortDescription ?? ""))
+           && (o.Firm.NameofFirm.Contains(NameofFirm ?? ""))
+           && (o.Currency.NameofCurrency.Contains(NameofCurrency ?? ""))
+           && (o.Price == Price || Price == 0)
+           && (o.Quantity == Quantity || Quantity == 0));
+
+            return applications;
         }
     }
 }
