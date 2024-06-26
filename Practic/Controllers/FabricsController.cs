@@ -16,7 +16,7 @@ namespace Practic.Controllers
     public class FabricsController : Controller
     {
         private readonly PracticdataContext _context;
-   //     private readonly int pageSize = 10;
+        private readonly int pageSize = 6;
 
         public FabricsController(PracticdataContext context)
         {
@@ -36,11 +36,11 @@ namespace Practic.Controllers
             fabricsDbContext = Search(fabricsDbContext, fabricView.Name, fabricView.NameofService, fabricView.TypeofWork, fabricView.CodeTnved
     , fabricView.CodeOkrb);
             var count = fabricsDbContext.Count();
-       //     fabricsDbContext = fabricsDbContext.Skip((page - 1) * pageSize).Take(pageSize);
+            fabricsDbContext = fabricsDbContext.Skip((page - 1) * pageSize).Take(pageSize);
             FabricViewModel fabrics = new FabricViewModel
             {
                 fabrics = fabricsDbContext,
-        //        PageViewModel = new PageViewModel(count, page, pageSize),
+                PageViewModel = new PageViewModel(count, page, pageSize),
                 Name = fabricView.Name,
                 NameofService = fabricView.NameofService,
                 TypeofWork = fabricView.TypeofWork,

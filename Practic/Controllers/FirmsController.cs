@@ -16,7 +16,7 @@ namespace Practic.Controllers
     public class FirmsController : Controller
     {
         private readonly PracticdataContext _context;
-        private readonly int pageSize = 10;
+        private readonly int pageSize = 6;
 
         public FirmsController(PracticdataContext context)
         {

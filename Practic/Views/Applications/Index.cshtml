@@ -7,20 +7,20 @@
 <h1>Заявка</h1>
 
 <p>
-    <a asp-action="Create">Создать</a>
+    <a type="button" class="btn btn-primary" asp-action="Create">Создать</a>
 </p>
-<form action="@Url.Action("Index","Applications")" method="post">
+<form class="form-control-plaintext" action="@Url.Action("Index","Applications")" method="post">
     Краткое описание:@Html.TextBox("ShortDescription", Model.ShortDescription)
     Цена:@Html.TextBox("Price", Model.Price, new { type = "number", step = 0.01 })
     Количество:@Html.TextBox("Quantity", Model.Quantity, new { type = "number", step = 1 })
     Валюта:@Html.TextBox("NameofCurrency", Model.NameofCurrency)
     Материал:@Html.TextBox("Name", Model.Name)
     Фирма:@Html.TextBox("NameofFirm", Model.NameofFirm)
-    <input type="submit" value="Найти"></input>
+    <input type="submit" class="btn btn-outline-dark" value="Найти"></input>
 </form>
 <table class="table">
     <thead>
-        <tr>
+        <tr class="table-primary">
             <th>
                 Краткое описание
             </th>
@@ -44,7 +44,7 @@
     </thead>
     <tbody>
 @foreach (var item in Model.applications) {
-        <tr>
+            <tr class="table-secondary">
             <td>
                 @Html.DisplayFor(modelItem => item.ShortDescription)
             </td>
@@ -64,12 +64,38 @@
                     @Html.DisplayFor(modelItem => item.Firm.NameofFirm)
             </td>
             <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Изменить</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Подробности</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                    <a class="badge rounded-pill bg-primary" asp-action="Edit" asp-route-id="@item.Id">Изменить</a>
+                    <br />
+                    <a class="badge rounded-pill bg-light" asp-action="Details" asp-route-id="@item.Id">Подробности</a>
+                    <br />
+                    <a class="badge rounded-pill bg-danger" asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
 
+<div>
+    <ul class="pagination">
+    @if (Model.PageViewModel.HasPreviousPage)
+    {
+        <li class="page-item">
+             <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageViewModel.PageNumber - 1)">&laquo;</a>
+        </li>
+    }
+
+    @for (int i = 1; i <= Model.PageViewModel.TotalPages; i++)
+    {
+        <li class="page-item">
+            <a class="page-link" asp-action="Index" asp-route-page="@i" class="@(i == Model.PageViewModel.PageNumber ? "active" : "")">@i</a>
+        </li>
+    }
+
+    @if (Model.PageViewModel.HasNextPage)
+    {
+        <li class="page-item">
+            <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageViewModel.PageNumber + 1)">&raquo;</a>
+        </li>
+    }
+    </ul>
+</div>
