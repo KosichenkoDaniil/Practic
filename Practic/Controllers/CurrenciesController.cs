@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Practic;
 using Practic.Models;
 using Practic.ViewModels;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using Practic.Infrastructure;
 
 namespace Practic.Controllers
@@ -16,7 +17,7 @@ namespace Practic.Controllers
     public class CurrenciesController : Controller
     {
         private readonly PracticdataContext _context;
-        private readonly int pageSize = 10;
+      //  private readonly int pageSize = 10;
 
         public CurrenciesController(PracticdataContext context)
         {
@@ -35,11 +36,11 @@ namespace Practic.Controllers
             IQueryable<Models.Currency> currenciesDbContext = _context.Currencies;
             currenciesDbContext = Search(currenciesDbContext, currencyView.NameofCurrency, currencyView.CountryofCurrency);
             var count = currenciesDbContext.Count();
-            currenciesDbContext = currenciesDbContext.Skip((page - 1) * pageSize).Take(pageSize);
+         //   currenciesDbContext = currenciesDbContext.Skip((page - 1) * pageSize).Take(pageSize);
             CurrencyViewModel currencies = new CurrencyViewModel
             {
                 currencies = currenciesDbContext,
-                PageViewModel = new PageViewModel(count, page, pageSize),
+         //       PageViewModel = new PageViewModel(count, page, pageSize),
                 NameofCurrency = currencyView.NameofCurrency,
                 CountryofCurrency = currencyView.CountryofCurrency
             };
@@ -187,7 +188,7 @@ namespace Practic.Controllers
         {
             currencies = currencies.Where(o => o.NameofCurrency.Contains(NameofCurrency ?? "")
            && (o.CountryofCurrency.Contains(CountryofCurrency ?? "")));
-
+            
             return currencies;
         }
     }

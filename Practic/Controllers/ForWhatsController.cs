@@ -16,7 +16,7 @@ namespace Practic.Controllers
     public class ForWhatsController : Controller
     {
         private readonly PracticdataContext _context;
-        private readonly int pageSize = 10;
+   //     private readonly int pageSize = 10;
 
         public ForWhatsController(PracticdataContext context)
         {
@@ -35,11 +35,11 @@ namespace Practic.Controllers
             IQueryable<Models.ForWhat> forWhatsDbContext = _context.ForWhats;
             forWhatsDbContext = Search(forWhatsDbContext, forWhatView.TypeofWork);
             var count = forWhatsDbContext.Count();
-            forWhatsDbContext = forWhatsDbContext.Skip((page - 1) * pageSize).Take(pageSize);
+        //    forWhatsDbContext = forWhatsDbContext.Skip((page - 1) * pageSize).Take(pageSize);
             ForWhatViewModel forWhats = new ForWhatViewModel
             {
                 forWhats = forWhatsDbContext,
-                PageViewModel = new PageViewModel(count, page, pageSize),
+        //        PageViewModel = new PageViewModel(count, page, pageSize),
                 TypeofWork = forWhatView.TypeofWork
             };
             return View(forWhats);

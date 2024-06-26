@@ -1,6 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Practic;
-using Practic.DbInitializer;
+using Practic.Data;
+using Microsoft.AspNetCore.Identity;
+using Practic.Middleware;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 internal class Program
 {
@@ -18,7 +22,6 @@ internal class Program
         // Configure the HTTP request pipeline.
         builder.Services.AddSession();
         builder.Services.AddRazorPages();
-        
         //services.AddControllersWithViews();
         var app = builder.Build();
         
@@ -36,15 +39,21 @@ internal class Program
         }
 
         app.UseHttpsRedirection();
+        app.UseDeveloperExceptionPage();
         app.UseStaticFiles();
-                
+        app.UseDbInitializer();
         app.UseRouting();
-
+        app.MapRazorPages();
         app.UseAuthorization();
 
-        app.MapControllerRoute(
-            name: "default",
-            pattern: "{controller=Home}/{action=Index}/{id?}");
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");
+            endpoints.MapRazorPages();
+
+        });
 
         app.Run();
     }

@@ -26,13 +26,13 @@ namespace Practic.Controllers
         // GET: Firms
         public IActionResult Index(int page = 1)
         {
-            var firmView = HttpContext.Session.Get<FirmViewModel>("Firms");
+            var firmView = HttpContext.Session.Get<FirmViewModel>("Firm");
             if (firmView == null)
             {
                 firmView = new FirmViewModel();
             }
 
-            IQueryable<Models.Firm> firmsDbContext = _context.Firms;
+            IQueryable<Firm> firmsDbContext = _context.Firms;
             firmsDbContext = Search(firmsDbContext, firmView.NameofFirm, firmView.СountryofFirm);
             var count = firmsDbContext.Count();
             firmsDbContext = firmsDbContext.Skip((page - 1) * pageSize).Take(pageSize);
@@ -49,7 +49,7 @@ namespace Practic.Controllers
         [HttpPost]
         public IActionResult Index(FirmViewModel firmView)
         {
-            HttpContext.Session.Set("Firms", firmView);
+            HttpContext.Session.Set("Firm", firmView);
 
             return RedirectToAction("Index");
         }
@@ -183,7 +183,7 @@ namespace Practic.Controllers
             return _context.Firms.Any(e => e.Id == id);
         }
 
-        private IQueryable<Models.Firm> Search(IQueryable<Models.Firm> firms, string NameofFirm, string CountryofFirm)
+        private IQueryable<Firm> Search(IQueryable<Firm> firms, string NameofFirm, string CountryofFirm)
         {
             firms = firms.Where(o => o.NameofFirm.Contains(NameofFirm ?? "")
            && (o.СountryofFirm.Contains(CountryofFirm ?? "")));

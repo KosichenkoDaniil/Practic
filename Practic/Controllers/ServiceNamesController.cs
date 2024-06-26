@@ -16,7 +16,7 @@ namespace Practic.Controllers
     public class ServiceNamesController : Controller
     {
         private readonly PracticdataContext _context;
-        private readonly int pageSize = 10;
+   //     private readonly int pageSize = 10;
 
         public ServiceNamesController(PracticdataContext context)
         {
@@ -35,11 +35,11 @@ namespace Practic.Controllers
             IQueryable<Models.ServiceName> serviceNamesDbContext = _context.ServiceNames;
             serviceNamesDbContext = Search(serviceNamesDbContext, serviceNameView.NameofService, serviceNameView.Department);
             var count = serviceNamesDbContext.Count();
-            serviceNamesDbContext = serviceNamesDbContext.Skip((page - 1) * pageSize).Take(pageSize);
+     //       serviceNamesDbContext = serviceNamesDbContext.Skip((page - 1) * pageSize).Take(pageSize);
             ServiceNameViewModel serviceNames = new ServiceNameViewModel
             {
                 serviceNames = serviceNamesDbContext,
-                PageViewModel = new PageViewModel(count, page, pageSize),
+     //           PageViewModel = new PageViewModel(count, page, pageSize),
                 NameofService = serviceNameView.NameofService,
                 Department = serviceNameView.Department
             };

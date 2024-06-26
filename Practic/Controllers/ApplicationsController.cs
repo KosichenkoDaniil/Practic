@@ -18,7 +18,7 @@ namespace Practic.Controllers
     public class ApplicationsController : Controller
     {
         private readonly PracticdataContext _context;
-        private readonly int pageSize = 10;
+        //private readonly int pageSize = 10;
 
         public ApplicationsController(PracticdataContext context)
         {
@@ -38,11 +38,11 @@ namespace Practic.Controllers
             applicationsDbContext = Search(applicationsDbContext, applicationView.Name, applicationView.ShortDescription, applicationView.NameofFirm, applicationView.NameofCurrency
     , applicationView.Price, applicationView.Quantity);
             var count = applicationsDbContext.Count();
-            applicationsDbContext = applicationsDbContext.Skip((page - 1) * pageSize).Take(pageSize);
+           // applicationsDbContext = applicationsDbContext.Skip((page - 1) * pageSize).Take(pageSize);
             ApplicationViewModel applications = new ApplicationViewModel
             {
                 applications = applicationsDbContext,
-                PageViewModel = new PageViewModel(count, page, pageSize),
+              //  PageViewModel = new PageViewModel(count, page, pageSize),
                 Name = applicationView.Name,
                 ShortDescription = applicationView.ShortDescription,
                 NameofFirm = applicationView.NameofFirm,

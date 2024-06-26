@@ -44,3 +44,13 @@
 }
     </tbody>
 </table>
+@*<page-link page-model="@Model.PageViewModel" page-action="Index"></page-link>
+@if(Model.PageViewModel.HasPreviousPage)
+{
+    <a asp-action="Index" asp-route-id="@Model.PageViewModel.PageNumber-1">то-же иди нахуй</a>
+}
+
+@if(Model.PageViewModel.HasNextPage)
+{
+    <a class="page-link" href="@Url.Action("Index", new { page = Model.PageViewModel.PageNumber+1 })">Иди Нахуй</a>
+}*@
